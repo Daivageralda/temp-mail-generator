@@ -2,11 +2,6 @@ import type { ProviderConfig } from '../types';
 
 export const PROVIDERS: ProviderConfig[] = [
   {
-    value: 'tempmail.la',
-    label: '🔥 TempMail.la',
-    description: 'Stealth domains — best for services that block temp emails (Qoder, etc.)',
-  },
-  {
     value: 'temp-mail.io',
     label: 'Temp-Mail.io',
     description: 'Clean domains, best for most services',
@@ -20,6 +15,11 @@ export const PROVIDERS: ProviderConfig[] = [
     value: 'guerrilla',
     label: 'Guerrilla Mail',
     description: 'Classic provider, may be blocked',
+  },
+  {
+    value: 'hanzzcreator.xyz',
+    label: '🏠 hanzzcreator.xyz',
+    description: 'Custom domain — your own email server',
   },
 ];
 

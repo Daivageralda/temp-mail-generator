@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import type { Message } from '../../types';
 
 interface MessageViewerProps {
@@ -6,9 +7,19 @@ interface MessageViewerProps {
 
 export function MessageViewer({ message }: MessageViewerProps) {
   return (
-    <div className="space-y-4">
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -12 }}
+      className="space-y-4"
+    >
       {/* Header */}
-      <div className="bg-surface-card border border-hairline rounded-xl p-5 space-y-3">
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="bg-surface-card border border-hairline rounded-xl p-5 space-y-3"
+      >
         <h2 className="text-lg font-semibold text-ink tracking-tight">
           {message.subject || '(no subject)'}
         </h2>
@@ -22,10 +33,15 @@ export function MessageViewer({ message }: MessageViewerProps) {
             <span className="text-body font-mono text-xs">{message.date}</span>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Body */}
-      <div className="bg-surface-card border border-hairline rounded-xl p-5 min-h-[200px]">
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="bg-surface-card border border-hairline rounded-xl p-5 min-h-[200px]"
+      >
         {message.htmlBody ? (
           <iframe
             srcDoc={message.htmlBody}
@@ -44,7 +60,7 @@ export function MessageViewer({ message }: MessageViewerProps) {
         ) : (
           <p className="text-muted text-center py-10 text-sm">No message body</p>
         )}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

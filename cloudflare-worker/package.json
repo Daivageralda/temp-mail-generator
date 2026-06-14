@@ -1,0 +1,17 @@
+{
+  "name": "hanzzcreator-mail-worker",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:migrate": "wrangler d1 execute hanzzcreator-db --file=./schema.sql",
+    "db:migrate:local": "wrangler d1 execute hanzzcreator-db --local --file=./schema.sql"
+  },
+  "devDependencies": {
+    "wrangler": "^3.99.0"
+  },
+  "dependencies": {
+    "postal-mime": "^2.7.4"
+  }
+}

@@ -3,7 +3,7 @@ import { EMAIL_GEN_DELAY } from '../constants/providers';
 import * as tempmailIo from './tempmail-io';
 import * as mailTm from './mail-tm';
 import * as guerrilla from './guerrilla';
-import * as templla from './templla';
+import * as customDomain from './custom-domain';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -15,8 +15,8 @@ function getProviderApi(provider: Provider) {
       return mailTm;
     case 'guerrilla':
       return guerrilla;
-    case 'tempmail.la':
-      return templla;
+    case 'hanzzcreator.xyz':
+      return customDomain;
   }
 }
 
@@ -65,7 +65,7 @@ export async function getMessage(
 ): Promise<Message> {
   // For providers that don't have a direct getMessage endpoint,
   // fetch from the inbox list and find the matching message
-  if (email.provider === 'tempmail.la' || email.provider === 'temp-mail.io') {
+  if (email.provider === 'temp-mail.io') {
     const messages = await getMessages(email);
     const msg = messages.find((m) => m.id === id);
     if (msg) return msg;
@@ -82,4 +82,4 @@ export async function getMessage(
 }
 
 // Re-export provider-specific APIs
-export { templla, tempmailIo, mailTm, guerrilla };
+export { tempmailIo, mailTm, guerrilla, customDomain };

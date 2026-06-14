@@ -1,4 +1,4 @@
-export type Provider = 'temp-mail.io' | 'mail.tm' | 'guerrilla' | 'tempmail.la';
+export type Provider = 'temp-mail.io' | 'mail.tm' | 'guerrilla' | 'hanzzcreator.xyz';
 
 export interface TempEmail {
   login: string;
@@ -18,12 +18,6 @@ export interface Message {
   body?: string;
   textBody?: string;
   htmlBody?: string;
-}
-
-export interface TurnstileStatus {
-  tokenReady: boolean;
-  browserOpen: boolean;
-  pageOpen: boolean;
 }
 
 export interface ProviderConfig {

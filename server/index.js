@@ -9,7 +9,7 @@ import { PORT } from './config.js';
 import tempmailIoRoutes from './routes/tempmail-io.js';
 import mailTmRoutes from './routes/mail-tm.js';
 import guerrillaRoutes from './routes/guerrilla.js';
-import templlaRoutes from './routes/templla.js';
+import customDomainRoutes from './routes/custom-domain.js';
 
 // ─── App Setup ────────────────────────────────────────────────────────────────
 
@@ -23,7 +23,7 @@ app.use(express.json());
 app.use('/api/tempmail', tempmailIoRoutes);
 app.use('/api/mailtm', mailTmRoutes);
 app.use('/api/guerrilla', guerrillaRoutes);
-app.use('/api/templla', templlaRoutes);
+app.use('/api/custom', customDomainRoutes);
 
 // ─── Health Check ─────────────────────────────────────────────────────────────
 
@@ -35,5 +35,5 @@ app.get('/api/health', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`✓ Backend running at http://localhost:${PORT}`);
-  console.log(`  Providers: temp-mail.io, mail.tm, guerrilla mail, tempmail.la`);
+  console.log(`  Providers: temp-mail.io, mail.tm, guerrilla mail, hanzzcreator.xyz`);
 });

@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import { motion } from 'framer-motion';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 type Size = 'sm' | 'md';
@@ -32,15 +33,19 @@ export function Button({
   icon,
   children,
   className = '',
+  disabled,
   ...props
 }: ButtonProps) {
   return (
-    <button
+    <motion.button
+      whileHover={!disabled ? { scale: 1.02 } : undefined}
+      whileTap={!disabled ? { scale: 0.97 } : undefined}
       className={`inline-flex items-center justify-center gap-1.5 transition-all duration-150 ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
-      {...props}
+      disabled={disabled}
+      {...(props as any)}
     >
       {icon}
       {children}
-    </button>
+    </motion.button>
   );
 }

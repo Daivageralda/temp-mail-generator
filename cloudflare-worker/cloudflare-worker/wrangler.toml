@@ -1,0 +1,9 @@
+name = "hanzzcreator-mail"
+main = "src/index.js"
+compatibility_date = "2024-12-01"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "hanzzcreator-db"
+database_id = "1e230e93-398e-42b9-9449-ffc223c39d00"
