@@ -1,8 +1,26 @@
-node_modules
-dist
-.vite
+# Dependencies
+node_modules/
+
+# Build output
+dist/
 tsconfig.tsbuildinfo
-*.log
-.DS_Store
+
+# Vite
+.vite/
+
+# Environment
 .env
 .env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
