@@ -24,3 +24,13 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Data & Screenshots
+screenshots/
+data/
+
+# Cache
+.cache/
+__pycache__/
+*.pyc
+DESIGN.md

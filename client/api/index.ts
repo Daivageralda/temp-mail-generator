@@ -9,20 +9,20 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function getProviderApi(provider: Provider) {
   switch (provider) {
+    case 'custom-domain':
+      return customDomain;
     case 'temp-mail.io':
       return tempmailIo;
     case 'mail.tm':
       return mailTm;
     case 'guerrilla':
       return guerrilla;
-    case 'hanzzcreator.xyz':
-      return customDomain;
   }
 }
 
 export async function generateRandomEmails(
   count: number,
-  provider: Provider = 'temp-mail.io'
+  provider: Provider = 'custom-domain'
 ): Promise<TempEmail[]> {
   const emails: TempEmail[] = [];
   const api = getProviderApi(provider);
@@ -40,15 +40,21 @@ export async function generateRandomEmails(
   return emails;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function normalizeMessage(msg: any): Message {
+// Provider APIs return varying message shapes — normalize them
+interface RawMessage {
+  [key: string]: unknown;
+}
+
+function normalizeMessage(msg: RawMessage): Message {
+  const str = (val: unknown, fallback = '') => (typeof val === 'string' ? val : fallback);
+
   return {
-    id: msg.mailboxId || msg.id || msg._id || msg.mail_id || String(Math.random()),
-    from: msg.messageFrom || msg.fromAddress || msg.from || msg.sender || msg.mail_from || msg.fromName || '',
-    subject: msg.subject || msg.mail_subject || '(no subject)',
-    date: msg.createdAt || msg.date || msg.created_at || msg.mail_date || '',
-    textBody: msg.body_text || msg.text || msg.intro || msg.mail_excerpt || msg.textBody || '',
-    htmlBody: msg.html || msg.body_html || msg.htmlBody || msg.content || undefined,
+    id: str(msg.mailboxId || msg.id || msg._id || msg.mail_id) || String(Math.random()),
+    from: str(msg.messageFrom || msg.fromAddress || msg.from || msg.sender || msg.mail_from || msg.fromName),
+    subject: str(msg.subject || msg.mail_subject) || '(no subject)',
+    date: str(msg.createdAt || msg.date || msg.created_at || msg.mail_date),
+    textBody: str(msg.body_text || msg.text || msg.intro || msg.mail_excerpt || msg.textBody),
+    htmlBody: str(msg.html || msg.body_html || msg.htmlBody || msg.content) || undefined,
   };
 }
 
@@ -72,10 +78,9 @@ export async function getMessage(
     throw new Error('Message not found');
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const apiWithGetMessage = getProviderApi(email.provider) as any;
-  if (typeof apiWithGetMessage.getMessage === 'function') {
-    return apiWithGetMessage.getMessage(email, id) as Promise<Message>;
+  const api = getProviderApi(email.provider) as typeof customDomain;
+  if (typeof api.getMessage === 'function') {
+    return api.getMessage(email, id) as Promise<Message>;
   }
 
   throw new Error(`getMessage not supported for provider: ${email.provider}`);

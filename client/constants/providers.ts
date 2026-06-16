@@ -1,6 +1,11 @@
-import type { ProviderConfig } from '../types';
+import type { Provider } from '../types';
 
 export const PROVIDERS: ProviderConfig[] = [
+  {
+    value: 'custom-domain',
+    label: '🏠 Custom Domain',
+    description: 'Your own email server — full control, no blocking',
+  },
   {
     value: 'temp-mail.io',
     label: 'Temp-Mail.io',
@@ -16,15 +21,9 @@ export const PROVIDERS: ProviderConfig[] = [
     label: 'Guerrilla Mail',
     description: 'Classic provider, may be blocked',
   },
-  {
-    value: 'hanzzcreator.xyz',
-    label: '🏠 hanzzcreator.xyz',
-    description: 'Custom domain — your own email server',
-  },
 ];
 
-export const API_BASE = 'http://localhost:3001/api';
+export const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 export const MAX_EMAIL_COUNT = 50;
 export const EMAIL_GEN_DELAY = 200; // ms between requests
 export const INBOX_REFRESH_INTERVAL = 5000; // ms
-export const TURNSTILE_POLL_INTERVAL = 2000; // ms

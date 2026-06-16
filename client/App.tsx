@@ -47,7 +47,7 @@ export default function App() {
   const [selectedEmail, setSelectedEmail] = useState<TempEmail | null>(null);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [count, setCount] = useState(5);
-  const [provider, setProvider] = useState<Provider>('temp-mail.io');
+  const [provider, setProvider] = useState<Provider>('custom-domain');
   const [loading, setLoading] = useState(false);
   const [view, setView] = useState<ViewMode>('list');
   const [appOpen, setAppOpen] = useState(false);

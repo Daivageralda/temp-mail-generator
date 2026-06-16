@@ -1,4 +1,4 @@
-export type Provider = 'temp-mail.io' | 'mail.tm' | 'guerrilla' | 'hanzzcreator.xyz';
+export type Provider = 'custom-domain' | 'temp-mail.io' | 'mail.tm' | 'guerrilla';
 
 export interface TempEmail {
   login: string;

@@ -1,0 +1,15 @@
+name = "my-temp-mail-worker"
+main = "src/index.js"
+compatibility_date = "2024-12-01"
+
+# Your domain — must match the domain you configured in Cloudflare Email Routing
+[vars]
+DOMAIN = "yourdomain.com"
+
+# D1 Database binding
+# Run: wrangler d1 create my-temp-mail-db
+# Then paste the database_id below
+[[d1_databases]]
+binding = "DB"
+database_name = "my-temp-mail-db"
+database_id = "your-database-id-here"

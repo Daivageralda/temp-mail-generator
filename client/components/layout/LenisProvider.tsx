@@ -34,7 +34,3 @@ export function LenisProvider({ children }: LenisProviderProps) {
 
   return <>{children}</>;
 }
-
-export function useLenis() {
-  return Lenis;
-}

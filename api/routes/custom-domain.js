@@ -1,4 +1,4 @@
-// ─── Provider: Custom Domain (hanzzcreator.xyz) Routes ───────────────────────
+// ─── Provider: Custom Domain Routes ──────────────────────────────────────────
 
 import { Router } from 'express';
 import {

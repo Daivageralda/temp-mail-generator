@@ -1,4 +1,4 @@
--- hanzzcreator D1 Database Schema
+-- Temp Mail D1 Database Schema
 
 CREATE TABLE IF NOT EXISTS mailboxes (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

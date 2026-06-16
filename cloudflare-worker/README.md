@@ -1,93 +1,98 @@
-# hanzzcreator.xyz — Cloudflare Worker Setup
+# Cloudflare Worker — Temp Mail Backend
 
-Email receiver + REST API untuk custom domain temp mail.
+Deploy this worker to get a fully functional temp mail API with your own domain.
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) 18+
-- [Cloudflare account](https://dash.cloudflare.com) (free plan)
-- Domain `hanzzcreator.xyz` sudah aktif di Cloudflare
+- [Cloudflare account](https://dash.cloudflare.com/sign-up) (free tier works)
+- A domain added to Cloudflare with [Email Routing](https://developers.cloudflare.com/email-routing/) enabled
+- [Node.js](https://nodejs.org/) >= 18
+- [pnpm](https://pnpm.io/) >= 9
 
-## Step 1: Install Wrangler CLI
+## Quick Start
 
-```bash
-cd cloudflare-worker
-npm install
-npx wrangler login
-```
-
-Ini akan buka browser untuk login ke Cloudflare.
-
-## Step 2: Buat D1 Database
+### 1. Clone & Install
 
 ```bash
-npx wrangler d1 create hanzzcreator-db
+git clone https://github.com/Daivageralda/temp-mail-generator.git
+cd temp-mail-generator/cloudflare-worker
+pnpm install
 ```
 
-Command ini akan output `database_id`. Copy ID-nya, lalu update `wrangler.toml`:
-
-```toml
-database_id = "PASTE_YOUR_DATABASE_ID_HERE"
-```
-
-## Step 3: Jalankan Migration
+### 2. Create D1 Database
 
 ```bash
-# Untuk production
-npx wrangler d1 execute hanzzcreator-db --remote --file=./schema.sql
-
-# Untuk local testing
-npx wrangler d1 execute hanzzcreator-db --local --file=./schema.sql
+pnpm wrangler d1 create my-temp-mail-db
 ```
 
-## Step 4: Deploy Worker
+Copy the `database_id` from the output.
+
+### 3. Configure
 
 ```bash
-npx wrangler deploy
+cp wrangler.toml.example wrangler.toml
 ```
 
-Setelah deploy, Worker akan punya URL seperti:
-```
-https://hanzzcreator-mail.<your-subdomain>.workers.dev
-```
+Edit `wrangler.toml`:
+- Set `name` to your worker name
+- Set `DOMAIN` to your domain (must match Cloudflare Email Routing)
+- Set `database_id` to the ID from step 2
 
-## Step 5: Setup Email Routing
-
-1. Buka [Cloudflare Dashboard](https://dash.cloudflare.com)
-2. Pilih domain `hanzzcreator.xyz`
-3. Ke menu **Email** → **Email Routing**
-4. Klik **Routing Rules** → **Catch-all**
-5. Set action ke **Send to a Worker** → pilih `hanzzcreator-mail`
-6. Save
-
-## Step 6: Update .env di Project
-
-Tambahkan di file `.env` project utama:
-
-```env
-WORKER_URL=https://hanzzcreator-mail.<your-subdomain>.workers.dev
-```
-
-## Step 7: Test!
+### 4. Setup Database Schema
 
 ```bash
-# Test Worker API
-curl https://hanzzcreator-mail.<your-subdomain>.workers.dev/api/domains
-
-# Generate email
-curl -X POST https://hanzzcreator-mail.<your-subdomain>.workers.dev/api/generate
-
-# Cek inbox
-curl https://hanzzcreator-mail.<your-subdomain>.workers.dev/api/inbox/test@hanzzcreator.xyz
+pnpm db:migrate
 ```
+
+### 5. Setup Email Routing (Catch-All)
+
+In your Cloudflare dashboard:
+1. Go to **Email Routing** → **Routing Rules**
+2. Under **Catch-all address**, click **Edit**
+3. Set action to **Send to a Worker**
+4. Select your deployed worker
+5. Save
+
+### 6. Deploy
+
+```bash
+pnpm deploy
+```
+
+Your API is now live at `https://your-worker-name.your-subdomain.workers.dev`
 
 ## API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/generate` | Generate random email address |
-| POST | `/api/bulk-generate` | Generate multiple emails (`{ "count": 5 }`) |
-| GET | `/api/inbox/:address` | List messages for an address |
-| GET | `/api/message/:id` | Read specific message |
-| DELETE | `/api/mailbox/:address` | Delete mailbox and messages |
-| GET | `/api/domains` | List available domains |
+| `POST` | `/api/generate` | Generate a random temp email |
+| `POST` | `/api/bulk-generate` | Generate multiple emails (body: `{"count": 10}`, max 50) |
+| `GET` | `/api/inbox/:address` | Get inbox messages for an address |
+| `GET` | `/api/message/:id` | Get full message content |
+| `DELETE` | `/api/mailbox/:address` | Delete a mailbox and all its messages |
+| `GET` | `/api/domains` | List available domain |
+
+## Local Development
+
+```bash
+pnpm dev
+```
+
+This starts the worker locally at `http://localhost:8787` with a local D1 instance.
+
+For local DB setup:
+```bash
+pnpm db:migrate:local
+```
+
+## Configuration Reference
+
+| Setting | Where | Description |
+|---------|-------|-------------|
+| `DOMAIN` | `wrangler.toml` → `[vars]` | Your email domain (e.g., `mydomain.com`) |
+| `database_id` | `wrangler.toml` → `[[d1_databases]]` | D1 database ID |
+| Worker name | `wrangler.toml` → `name` | Cloudflare Worker name |
+
+## License
+
+MIT

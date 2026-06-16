@@ -4,13 +4,12 @@
   <img src="https://img.shields.io/badge/pnpm-9%2B-orange?style=flat-square&logo=pnpm" alt="pnpm" />
   <img src="https://img.shields.io/badge/React-18-blue?style=flat-square&logo=react" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-blue?style=flat-square&logo=typescript" alt="TypeScript" />
-  <img src="https://img.shields.io/github/repo-size/Daivageralda/temp-mail-generator?style=flat-square" alt="Repo Size" />
 </p>
 
 <h1 align="center">📧 Bulk Temp Mail Generator</h1>
 
 <p align="center">
-  <strong>A powerful bulk temporary email generator with multi-provider support, real-time inbox monitoring, and stealth domain capabilities.</strong>
+  <strong>A powerful bulk temporary email generator with multi-provider support, real-time inbox monitoring, and custom domain capabilities.</strong>
 </p>
 
 <p align="center">
@@ -19,7 +18,7 @@
   <a href="#quick-start">Quick Start</a> •
   <a href="#usage">Usage</a> •
   <a href="#api-reference">API</a> •
-  <a href="#troubleshooting">Troubleshooting</a>
+  <a href="#self-hosting">Self-Hosting</a>
 </p>
 
 ---
@@ -27,38 +26,31 @@
 ## ✨ Features
 
 - **🔥 Bulk Generation** — Generate up to 50 temporary email addresses at once
-- **🔄 Multi-Provider Support** — 4 providers with automatic fallback:
-  - **TempMail.la** — Stealth domains that bypass services blocking temp emails
+- **🔄 4 Providers** — Choose the best provider for your needs:
+  - **🏠 Custom Domain** — Your own email server via Cloudflare Worker (full control, no blocking)
   - **Temp-Mail.io** — Clean domains, works with most services
   - **Mail.tm** — Reliable provider, great for testing
   - **Guerrilla Mail** — Classic provider with wide compatibility
 - **📬 Real-Time Inbox** — Auto-refreshing inbox (every 5 seconds) with full message rendering
-- **🛡️ Cloudflare Turnstile Bypass** — Puppeteer-powered browser automation for TempMail.la's stealth domains
 - **📋 Clipboard Integration** — One-click copy individual emails or bulk copy all addresses
-- **🌙 Dark Theme UI** — Modern, responsive interface built with Tailwind CSS
-- **📨 HTML Email Rendering** — Full HTML email content displayed in sandboxed iframes
+- **🌙 Dark Theme UI** — Modern, responsive landing page + app interface
+- **📨 HTML Email Rendering** — Full HTML email content in sandboxed iframes
+- **🌐 Open Source** — Self-host everything, including your own email domain
 
 ## 🛠️ Tech Stack
 
-| Layer      | Technology                                |
-|------------|-------------------------------------------|
-| Frontend   | React 18, TypeScript, Tailwind CSS v4     |
-| Backend    | Express.js 5, Node.js                     |
-| Build Tool | Vite 6                                    |
-| Automation | Puppeteer (Chrome/Chromium)               |
-| Package Mgr| pnpm                                      |
-| Concurrency| concurrently (dev server orchestration)   |
+| Layer      | Technology                            |
+|------------|---------------------------------------|
+| Frontend   | React 18, TypeScript, Tailwind CSS v4 |
+| Backend    | Express.js 5, Node.js                 |
+| Worker     | Cloudflare Workers + D1 (optional)    |
+| Build Tool | Vite 6                                |
+| Package Mgr| pnpm                                  |
 
 ## 📋 Prerequisites
 
-Before you begin, ensure you have the following installed:
-
 - **Node.js** >= 18.0.0
 - **pnpm** >= 9.0.0 (`npm install -g pnpm`)
-- **Google Chrome** or **Chromium** (required for TempMail.la provider)
-
-> [!NOTE]
-> Chrome/Chromium is only required if you plan to use the **TempMail.la** provider. Other providers work without a browser.
 
 ## 🚀 Quick Start
 
@@ -75,29 +67,40 @@ cd temp-mail-generator
 pnpm install
 ```
 
-### 3. Start the Application
+### 3. (Optional) Configure Custom Domain
+
+If you want to use the **Custom Domain** provider, copy the environment template and set your Cloudflare Worker URL:
+
+```bash
+cp .env.example .env
+# Edit .env and set WORKER_URL to your deployed worker URL
+```
+
+> See [Self-Hosting](#self-hosting) for deploying your own Cloudflare Worker.
+
+### 4. Start the Application
 
 ```bash
 pnpm dev
 ```
 
-This command simultaneously starts:
+This starts both services concurrently:
 
-| Service        | URL                      | Description          |
-|----------------|--------------------------|----------------------|
-| **Frontend**   | `http://localhost:5173`  | Vite dev server (React UI) |
-| **Backend**    | `http://localhost:3001`  | Express API server   |
+| Service    | URL                     | Description              |
+|------------|-------------------------|--------------------------|
+| **Client** | `http://localhost:5174` | Vite dev server (React)  |
+| **API**    | `http://localhost:3001` | Express backend          |
 
-### 4. Open in Browser
+### 5. Open in Browser
 
-Navigate to [http://localhost:5173](http://localhost:5173) to start using the app.
+Navigate to [http://localhost:5174](http://localhost:5174) to start using the app.
 
 ## 📖 Usage
 
 ### Generating Temporary Emails
 
-1. **Select a Provider** from the dropdown menu:
-   - 🔥 **TempMail.la** — Best for services that block temp emails (e.g., Qoder, etc.)
+1. **Select a Provider** from the dropdown:
+   - 🏠 **Custom Domain** — Your own email server (requires Worker setup)
    - **Temp-Mail.io** — Clean domains, works for most services
    - **Mail.tm** — Reliable and consistent
    - **Guerrilla Mail** — Classic provider, may be blocked by some services
@@ -106,188 +109,193 @@ Navigate to [http://localhost:5173](http://localhost:5173) to start using the ap
 
 3. **Click "Generate Emails"** — Emails will appear in the list below
 
-4. **Copy emails** individually (click the copy icon) or use **"📋 Copy All"** to copy all addresses at once
+4. **Copy emails** individually or use **"📋 Copy All"** to copy all addresses
 
 ### Viewing Inbox
 
-1. **Click on any email address** in the list to open its inbox
-2. The inbox **auto-refreshes every 5 seconds** for new messages
-3. You can also manually click the **Refresh** button
-4. Use **"📧 Send Test"** to send a test email to verify the inbox works
+1. **Click on any email** in the list to open its inbox
+2. Inbox **auto-refreshes every 5 seconds**
+3. Click **Refresh** to manually check for new messages
 
 ### Reading Messages
 
-1. **Click on any message** in the inbox to view its full content
+1. **Click on any message** in the inbox to view full content
 2. HTML emails are rendered in a sandboxed iframe
 3. Plain text emails are displayed as formatted text
-4. Use the **back arrow** (←) to return to the inbox or email list
-
-### Using TempMail.la (Stealth Domains)
-
-TempMail.la requires solving a Cloudflare Turnstile challenge:
-
-1. Select **🔥 TempMail.la** as the provider
-2. If the Turnstile banner shows **"⏳ Turnstile Setup Required"**:
-   - Click **"🔓 Setup Turnstile"**
-   - A Chrome window will open automatically
-   - **Click the Turnstile checkbox** in the Chrome window
-3. Once the banner shows **"✅ Turnstile Ready"**, you can generate emails normally
-
-> [!TIP]
-> The Turnstile token persists for the session. You only need to solve it once per server start.
+4. Use the **back arrow** (←) to navigate back
 
 ## 🏗️ Project Structure
 
 ```
-temp-mail-generator/
-├── index.html                  # HTML entry point
-├── server.js                   # Express backend (API proxy + Puppeteer)
-├── package.json                # Dependencies and scripts
-├── pnpm-lock.yaml              # Lock file
-├── pnpm-workspace.yaml         # pnpm workspace config
-├── tsconfig.json               # TypeScript configuration
-├── vite.config.ts              # Vite configuration
-├── src/
-│   ├── main.tsx                # React app entry point
+bulk-temp-mail/
+├── client/                     # React frontend
+│   ├── main.tsx                # App entry point
 │   ├── App.tsx                 # Main application component
-│   ├── api.ts                  # API client (frontend ↔ backend)
-│   ├── types.ts                # TypeScript type definitions
-│   ├── index.css               # Global styles (Tailwind)
-│   ├── vite-env.d.ts           # Vite type declarations
-│   └── components/
-│       ├── EmailList.tsx        # Email list display with actions
-│       ├── InboxPanel.tsx       # Inbox view with auto-refresh
-│       ├── MessageViewer.tsx    # Full email message renderer
-│       └── CopyButton.tsx       # Reusable copy-to-clipboard button
-├── dist/                       # Production build output
-└── node_modules/               # Dependencies
+│   ├── api/                    # API client (frontend → backend)
+│   ├── components/             # React components
+│   │   ├── features/           # App features (EmailList, Inbox, etc.)
+│   │   ├── landing/            # Landing page sections
+│   │   ├── layout/             # Layout providers (Lenis smooth scroll)
+│   │   └── ui/                 # Reusable UI components
+│   ├── hooks/                  # Custom React hooks
+│   ├── types/                  # TypeScript type definitions
+│   └── constants/              # App constants & provider config
+├── api/                        # Express backend
+│   ├── index.js                # Server entry point (port 3001)
+│   ├── config.js               # Centralized configuration
+│   ├── routes/                 # API route handlers
+│   │   ├── custom-domain.js    # Custom domain provider
+│   │   ├── tempmail-io.js      # Temp-Mail.io provider
+│   │   ├── mail-tm.js          # Mail.tm provider
+│   │   └── guerrilla.js        # Guerrilla Mail provider
+│   └── services/               # Business logic
+│       └── custom-domain.js    # Cloudflare Worker API client
+├── cloudflare-worker/          # Cloudflare Worker (optional)
+│   ├── src/                    # Worker source code (modular)
+│   ├── wrangler.toml.example   # Worker config template
+│   ├── schema.sql              # D1 database schema
+│   └── README.md               # Worker deployment guide
+├── public/                     # Static assets & fonts
+├── .env.example                # Environment template
+├── package.json                # Root dependencies & scripts
+└── vite.config.ts              # Vite configuration
 ```
 
 ## 📡 API Reference
 
-The backend server runs on `http://localhost:3001` and exposes the following REST endpoints:
+The backend runs on `http://localhost:3001`.
+
+### Provider Discovery
+
+| Method | Endpoint          | Description                    |
+|--------|-------------------|--------------------------------|
+| `GET`  | `/api/providers`  | List available providers       |
+
+### Custom Domain
+
+| Method | Endpoint                                   | Description              |
+|--------|--------------------------------------------|--------------------------|
+| `POST` | `/api/custom/new`                          | Create a new email       |
+| `GET`  | `/api/custom/messages/:address`            | Get inbox messages       |
+| `GET`  | `/api/custom/message/:id`                  | Get a specific message   |
 
 ### Temp-Mail.io
 
 | Method | Endpoint                              | Description              |
 |--------|---------------------------------------|--------------------------|
-| `POST` | `/api/tempmail/new`                   | Create a new temp email  |
-| `GET`  | `/api/tempmail/messages/:email`       | Get messages for email   |
+| `POST` | `/api/tempmail/new`                   | Create a new email       |
+| `GET`  | `/api/tempmail/messages/:email`       | Get inbox messages       |
 
 ### Mail.tm
 
 | Method | Endpoint                              | Description              |
 |--------|---------------------------------------|--------------------------|
-| `POST` | `/api/mailtm/new`                     | Create a new temp email  |
+| `POST` | `/api/mailtm/new`                     | Create a new email       |
 | `GET`  | `/api/mailtm/messages`                | Get inbox messages       |
 | `GET`  | `/api/mailtm/message/:id`             | Get a specific message   |
 
-> **Headers:** `x-token: <jwt_token>` (required for Mail.tm endpoints)
+> **Headers:** `x-token: <jwt_token>` (required for Mail.tm)
 
 ### Guerrilla Mail
 
 | Method | Endpoint                              | Description              |
 |--------|---------------------------------------|--------------------------|
-| `GET`  | `/api/guerrilla/new`                  | Create a new temp email  |
+| `GET`  | `/api/guerrilla/new`                  | Create a new email       |
 | `GET`  | `/api/guerrilla/messages`             | Get inbox messages       |
 | `GET`  | `/api/guerrilla/message/:id`          | Get a specific message   |
 
-> **Headers:** `x-token: <sid_token>` (required for Guerrilla endpoints)
-
-### TempMail.la (Stealth)
-
-| Method | Endpoint                                  | Description                    |
-|--------|-------------------------------------------|--------------------------------|
-| `GET`  | `/api/templla/domains`                    | List available stealth domains |
-| `POST` | `/api/templla/new`                        | Create a new stealth email     |
-| `GET`  | `/api/templla/messages/:address`          | Get inbox messages             |
-| `GET`  | `/api/templla/message/:mailId/:msgId`     | Get a specific message         |
-| `GET`  | `/api/templla/status`                     | Check Turnstile token status   |
-| `POST` | `/api/templla/refresh-token`              | Manually refresh Turnstile     |
+> **Headers:** `x-token: <sid_token>` (required for Guerrilla)
 
 ### Available Scripts
 
-| Command           | Description                                          |
-|-------------------|------------------------------------------------------|
-| `pnpm dev`        | Start both frontend and backend concurrently         |
-| `pnpm dev:server` | Start only the backend server (port 3001)            |
-| `pnpm dev:client` | Start only the Vite dev server (port 5173)           |
-| `pnpm build`      | Build for production (TypeScript compile + Vite)     |
-| `pnpm preview`    | Preview the production build locally                 |
+| Command           | Description                                      |
+|-------------------|--------------------------------------------------|
+| `pnpm dev`        | Start both client and API concurrently           |
+| `pnpm dev:server` | Start only the API server (port 3001)            |
+| `pnpm dev:client` | Start only the Vite dev server                   |
+| `pnpm build`      | Build for production                             |
+| `pnpm preview`    | Preview the production build                     |
 
 ## ⚙️ Configuration
 
 ### Environment Variables
 
-| Variable     | Description                           | Default                        |
-|--------------|---------------------------------------|--------------------------------|
-| `CHROME_PATH`| Custom path to Chrome/Chromium binary | Auto-detected (macOS paths)    |
+| Variable       | Description                              | Default                          |
+|----------------|------------------------------------------|----------------------------------|
+| `VITE_API_URL` | Frontend API base URL                    | `http://localhost:3001/api`      |
+| `WORKER_URL`   | Cloudflare Worker URL (custom domain)    | *(empty — custom domain disabled)* |
+| `PORT`         | API server port                          | `3001`                           |
 
-Example:
+Example `.env`:
 
 ```bash
-CHROME_PATH=/usr/bin/google-chrome pnpm dev
+VITE_API_URL=http://localhost:3001/api
+WORKER_URL=https://your-worker.your-subdomain.workers.dev
+PORT=3001
 ```
 
-### Chrome Detection
+## 🌐 Self-Hosting
 
-The server automatically searches for Chrome in these locations (macOS):
+### Deploy Custom Domain Worker (Optional)
 
-- `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`
-- `/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary`
-- `/Applications/Chromium.app/Contents/MacOS/Chromium`
+The **Custom Domain** provider lets you use your own email domain via Cloudflare. This is optional — the other 3 providers work without any setup.
 
-For Linux or custom installations, set the `CHROME_PATH` environment variable.
+See [cloudflare-worker/README.md](cloudflare-worker/README.md) for the complete deployment guide.
 
-### Stealth Domains
+**Quick version:**
 
-TempMail.la provider uses the following stealth domains (configured in `server.js`):
+```bash
+cd cloudflare-worker
+pnpm install
 
+# 1. Create D1 database
+wrangler d1 create my-temp-mail-db
+
+# 2. Configure
+cp wrangler.toml.example wrangler.toml
+# Edit wrangler.toml: set DOMAIN and database_id
+
+# 3. Setup database tables
+pnpm db:migrate
+
+# 4. Deploy
+pnpm deploy
 ```
-compressjpg.io, aiphotoeditor.io, gagcalculator.me,
-pinkgreengenerator.me, aiphotoenhancer.me, lovecalculatorname.org,
-whitehousecalculator.com, wplacetools.com, lordofmysteries.org,
-sorawatermarkadder.org, deshnetarchadacalculator.one
+
+Then set `WORKER_URL` in your root `.env` to the deployed worker URL.
+
+### Deploy the Full App
+
+```bash
+# Build frontend
+pnpm build
+
+# Serve with any static host (Vercel, Netlify, etc.)
+# Point API requests to your Express server
 ```
 
 ## 🔧 Troubleshooting
 
-### Chrome not found
-
-```
-Error: Chrome not found. Set CHROME_PATH env var.
-```
-
-**Solution:** Install Google Chrome or set the `CHROME_PATH` environment variable to your Chrome binary path.
-
-### Turnstile token expired / not working
-
-If email generation fails with Turnstile errors:
-
-1. Click **"🔓 Setup Turnstile"** in the UI
-2. Wait for the Chrome window to open
-3. Click the Turnstile checkbox in Chrome
-4. Wait for the **"✅ Turnstile Ready"** banner
-
 ### Port already in use
 
-If port 3001 or 5173 is occupied:
-
 ```bash
-# Kill process on port 3001
-lsof -ti:3001 | xargs kill -9
-
-# Kill process on port 5173
-lsof -ti:5173 | xargs kill -9
+lsof -ti:3001 | xargs kill -9   # Kill API server
+lsof -ti:5174 | xargs kill -9   # Kill Vite dev server
 ```
 
 ### Provider returns errors
 
-Some providers may be temporarily unavailable or rate-limited. Try switching to a different provider from the dropdown.
+Some providers may be temporarily unavailable or rate-limited. Try switching to a different provider.
+
+### Custom Domain not working
+
+1. Ensure `WORKER_URL` is set in `.env`
+2. Verify the worker is deployed: `curl $WORKER_URL/api/providers`
+3. Check Cloudflare Email Routing is configured for your domain
 
 ## 🤝 Contributing
 
-Contributions are welcome! Here's how you can help:
+Contributions are welcome!
 
 1. **Fork** the repository
 2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
@@ -295,25 +303,16 @@ Contributions are welcome! Here's how you can help:
 4. **Push** to the branch (`git push origin feature/amazing-feature`)
 5. **Open** a Pull Request
 
-Please make sure to:
-- Follow the existing code style
-- Update documentation as needed
-- Test your changes thoroughly
-
 ## 📄 License
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
-```
-MIT License — Copyright (c) 2026 Raihan Daiva Geralda | Rehan
-```
+MIT License — see [LICENSE](LICENSE) for details.
 
 ## ⚠️ Disclaimer
 
-This tool is intended for **legitimate testing and privacy purposes only** (e.g., QA testing, signing up for services without exposing your real email). Please use responsibly and in accordance with applicable laws and terms of service.
+This tool is intended for **legitimate testing and privacy purposes only** (e.g., QA testing, signing up for services without exposing your real email). Use responsibly and in accordance with applicable laws and terms of service.
 
 ---
 
 <p align="center">
-  Made with ❤️ by <a href="https://github.com/Daivageralda">Raihan Daiva Geralda</a>
+  Built by <a href="https://github.com/Daivageralda">Daivageralda</a>
 </p>

@@ -8,6 +8,7 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
+    port: 5174,
     proxy: {
       '/tempmail-api': {
         target: 'https://api.internal.temp-mail.io',

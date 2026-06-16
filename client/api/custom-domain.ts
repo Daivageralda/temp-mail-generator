@@ -19,7 +19,7 @@ export async function createEmail(): Promise<TempEmail> {
     domain,
     fullAddress: data.email,
     token: '',
-    provider: 'hanzzcreator.xyz',
+    provider: 'custom-domain',
     mailId: data.mailId,
     endAt: data.endAt,
   };

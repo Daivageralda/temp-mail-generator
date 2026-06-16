@@ -1,6 +1,6 @@
-// ─── Service: Custom Domain (hanzzcreator.xyz via Cloudflare Worker) ─────────
+// ─── Service: Custom Domain (Cloudflare Worker) ──────────────────────────────
 
-const WORKER_URL = process.env.WORKER_URL || 'https://hanzzcreator-mail.daivageralda831.workers.dev';
+import { WORKER_URL } from '../config.js';
 
 async function workerFetch(path, options = {}) {
   const url = `${WORKER_URL}${path}`;

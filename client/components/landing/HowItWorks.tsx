@@ -5,7 +5,7 @@ const steps = [
   {
     number: '01',
     title: 'Choose a Provider',
-    description: 'Select from 5 email providers — each with different domains and capabilities. Use stealth domains for stricter services.',
+    description: 'Select from 4 email providers — each with different domains and capabilities. Use custom domain for stricter services.',
     visual: (
       <div className="bg-surface-elevated rounded-lg p-3 border border-hairline">
         {['Temp-Mail.io', 'Mail.tm', 'Guerrilla Mail', '🏠 Custom'].map((p, i) => (
